@@ -43,10 +43,10 @@ const register = async (req, res, next) => {
         password: encryptedPassword,
         username
     })
-
     
 
     const token = generateToken(user);
+    logger.debug(token);
 
     return res.status(201).json({
         userDetails: {
