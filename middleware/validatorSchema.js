@@ -13,6 +13,12 @@ const validatorSchema = (routeToValidate) => {
         email: Joi.string().email(),
       }),
     },
+    request: {
+      sendRequest: Joi.object({
+        senderId: Joi.string(),
+        recieverId: Joi.string(),
+      }),
+    },
   };
 };
 

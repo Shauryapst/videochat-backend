@@ -14,7 +14,8 @@ const login = async (req, res, next) => {
             userDetails: {
                 email: user.email,
                 username: user.username,
-                token: token
+                token: token,
+                userId: user._id
             }
         })
         }
@@ -34,7 +35,7 @@ const register = async (req, res, next) => {
     logger.debug("user exists in register : " + JSON.stringify(userExist));
     if (userExist) {
         
-        return res.status(409).send("Email  alredy in use");
+        return res.status(409).send("Email  already in use");
     }
     
     const encryptedPassword = await bcrypt.hash(password, 10);
@@ -51,7 +52,9 @@ const register = async (req, res, next) => {
     return res.status(201).json({
         userDetails: {
             email: user.email,
-            token: token
+            token: token,
+            userId: user._id,
+            username: username
         }
     })
 
