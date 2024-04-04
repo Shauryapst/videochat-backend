@@ -17,7 +17,7 @@ const connectDB = () => {
   });
  
   dbConnection.on("error", (err) => {
-    logger.error(`connection error: ${err}`);
+    logger.error(`connection error: ${err.message}`);
   });
   return;
 }

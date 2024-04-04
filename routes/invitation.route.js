@@ -10,6 +10,6 @@ const { createInvitation, updateInvitation, listInvitation } = require('../contr
 
 module.exports = (basePath, router) => {
     router.post(basePath + path + '',  verifyToken, createInvitation);
-    router.put(basePath + path + '/:invitationId', verifyToken, updateInvitation);
+    router.put(basePath + path + '', verifyToken, updateInvitation);
     router.get(basePath + path + '', verifyToken, listInvitation);
 }
