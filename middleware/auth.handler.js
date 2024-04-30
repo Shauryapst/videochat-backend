@@ -11,7 +11,7 @@ const verifyToken = (req, res, next) => {
   try {
     token = token.replace(/^Bearer\s+/, "");
     const decoded = jwt.verify(token, config.JWT_SECRET);
-
+    
     req.user = decoded;
   } catch (err) {
     return res.status(401).send("Token Invalid");
@@ -30,8 +30,6 @@ const socketTokenValidation = (socket, next) => {
     const socketError = new Error("NOT_AUTHORIZED");
     return next(socketError);
   }
-
-  next();
 };
 
 module.exports = { verifyToken, socketTokenValidation };

@@ -1,5 +1,6 @@
 const logger = require("../logger/logger");
 const Invitation = require("../models/invitation");
+const Conversation = require('../models/conversation');
 const User = require("../models/user");
 const {
   updateFriendsPendingInvitations,
@@ -48,24 +49,25 @@ const createInvitation = async (req, res) => {
     });
 
     const usersAlreadyFriends = targetUser.friends.find(
-      (friendId) => friendId.toString() === senderId.toString()
+      (friendId) => friendId.toString() === recieverId.toString()
     );
+
 
     if (usersAlreadyFriends) {
       return res
         .status(409)
-        .send("Friend already added. Please check friends list");
+        .json({status:false, message: "Already Friends"});
     }
 
-    const invitation = Invitation.create({
+    const invitation = await Invitation.create({
       senderId: senderId,
       recieverId: recieverId,
     });
-    logger.debug(JSON.stringify(invitation));
+    logger.debug('invite created');
+    logger.debug(invitation);
 
-    updateFriendsPendingInvitations(recieverId);
-
-    return res.status(200).json({
+    updateFriendsPendingInvitations(invitation._id, recieverId);
+    return res.status(201).json({
       status: true,
       message: "Invitation Sent",
     });
@@ -82,11 +84,10 @@ const updateInvitation = async (req, res) => {
     }
 
     const invitation = await Invitation.findById(invitationId);
-
     if (!invitation) {
       return res.status(404).json({ error: "Invitation not found" });
     }
-
+    let conversation = null;
     switch (action) {
       case "accept":
         invitation.status = "accepted";
@@ -96,6 +97,11 @@ const updateInvitation = async (req, res) => {
         await User.findByIdAndUpdate(invitation.senderId, {
           $push: { friends: invitation.recieverId },
         });
+        conversation = await Conversation.create({
+          message: [],
+          participants: [invitation.recieverId, invitation.senderId]
+        });
+        
         break;
        
       case "reject":
@@ -103,8 +109,7 @@ const updateInvitation = async (req, res) => {
         break;
     }
 
-    await invitation.remove();
-
+    await Invitation.deleteOne({_id: invitation._id});
     res
       .status(200)
       .json({ message: `Sucessfully Invitation ${invitation.status}` });
@@ -129,7 +134,6 @@ const listInvitation = async (req, res) => {
         username: invite.senderId.username,
       };
     });
-
     return res
       .status(200)
       .json({ status: true, message: "Invitation List", data: list });
