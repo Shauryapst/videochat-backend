@@ -11,6 +11,7 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyparser.urlencoded({ extended: false }));
 
+
 logger.info("routes------------", `./routes`);
 require('./routes')('/api', app);
 module.exports = app;

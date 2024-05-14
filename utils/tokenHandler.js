@@ -4,7 +4,7 @@ require("dotenv").config;
 const generateToken = (user) => {
   const JWT_SECRET = process.env.JWT_SECRET;
   const accessToken = jwt.sign(
-    { id: user._id, email: user.email },
+    { id: user._id, email: user.email, username: user.username  },
     JWT_SECRET,
     {
       expiresIn: "30d",
