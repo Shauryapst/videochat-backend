@@ -1,5 +1,5 @@
 const path = "/auth";
-const authController = require('../conrollers/auth.controller');
+const authController = require('../controllers/auth.controller');
 
 
 const Joi = require('joi');
